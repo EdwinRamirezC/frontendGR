@@ -1,13 +1,14 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Tweets from './Tweets'
+import tweetsAlmacenados from './TweetsAlmacenados'
 // import About from './About'
 
 const Main = () => (
-  <main className="mt-5">
+  <main>
     <Switch>
       <Route exact path='/' component={Tweets}/>
-      {/* <Route path='/about' component={About}/> */}
+      <Route path='/tweets' component={tweetsAlmacenados}/>
     </Switch>
   </main>
 )

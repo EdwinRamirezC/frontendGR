@@ -7,22 +7,26 @@ class Tweets extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      rating: 0,
-      hashtag: 'medellin',
+      consulta: '',
       tweets: []
     }
   }
   
   getTweet = () => {
-      httpClient.get('tweets/'+this.state.hashtag)
+    let query = this.state.consulta
+    query = query.replace("#","%23");
+    query = query.replace(" ","%20");
+    if(query !== ""){
+      httpClient.get('tweets/'+query)
       .then((response) => {
           this.setState({
-            tweets: response.statuses.map(tweet => ({texto: tweet.text,id_tweet:tweet.id,screen_name:tweet.user.screen_name,imagen:tweet.user.profile_image_url, rating: 0})),
+            tweets: response.statuses.map(tweet => ({texto: tweet.text,id_tweet:tweet.id,screen_name:tweet.user.screen_name,imagen:tweet.user.profile_image_url, valoracion: 0})),
           })
       })
       .catch((error) => {
           console.error(error)
       })
+    }
   }
 
   ratingTweet = (tweet) => {
@@ -36,49 +40,48 @@ class Tweets extends React.Component {
   }
 
   change = (e) => {
-    this.setState({ hashtag: e.target.value })
+    this.setState({ consulta: e.target.value })
   };
 
   render() {
     return (
-      <div className="wraper-tweet">
+      <div className="wraper-tweet -col-12">
         <div className="row">
-          <div className="col-4 text-right">
-            <label><strong>Hashtag</strong></label>
+          <div className="col-5 offset-3 ">
+            <input type="text" className="form-control" placeholder='Escriba palabra a buscar en Twitter' onChange={this.change} />
           </div>
-          <div className="col-7">
-            <input type="text" className="form-control" onChange={this.change} />
-          </div>
-          <div className="col-1">
+          <div className="col-2">
             <button className="btn btn-info" onClick={() => {this.getTweet()}} >Buscar</button>
           </div>
         </div>
-
+        <div className = 'mt-5'>
         <ul className="mt-5">
           {
             this.state.tweets.map((item, index) => 
               <li className="mt-3" key={index}>
                 <div className="row">
-                  <div className="col-1">
-                    <img src={item.imagen}></img>
+                  <div className="col-1 offset-2">
+                    <img src={item.imagen} alt="imagen de usuario"></img>
                   </div>
-                  <div className="col">
+                  <div className="col-6">
                     {item.texto}
                   </div>
-                  <div className="2">
-                    <Rater total={5} rating={this.state.tweets[index].rating} onRate={({rating}) => {
+                  <div>
+                    <Rater total={5} rating={this.state.tweets[index].valoracion} onRate={({rating}) => {
                       const items = this.state.tweets;
-                      items[index].rating = rating;
+                      items[index].valoracion = rating;
                       this.setState({
                         tweets: items,
                       });
                       this.ratingTweet(this.state.tweets[index])
-                     }} />
+                     }} 
+                     />
                   </div>
                 </div>
               </li>)
           }
         </ul>
+        </div>
       </div>
     )
   }

@@ -4,8 +4,9 @@ import Main from './../../views/Main'
 
 const Dashboard = () => (
   <div>
-    <Header />
-    <div className="container">
+    <div className = 'siempreTop'> <Header /></div>
+   
+    <div className="container-fluid contenido">
       <Main />
     </div>
   </div>
